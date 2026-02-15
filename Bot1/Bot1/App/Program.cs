@@ -20,9 +20,9 @@ namespace Bot1
     public static Task Main(string[] args) => new Program().MainAsync();
         public async Task MainAsync()
         {
-            _config = ENVLoader.LoadEnv(); //local
-            var token = _config["DISCORDTOKEN"]; //local
-            //var token = Environment.GetEnvironmentVariable("DISCORD_TOKEN"); //host
+            //_config = ENVLoader.LoadEnv(); //local
+            //var token = _config["DISCORDTOKEN"]; //local
+            var token = Environment.GetEnvironmentVariable("DISCORD_TOKEN"); //host
 
             var services = new ServiceCollection();
             services
