@@ -22,18 +22,22 @@ namespace Bot1.App.Commands
         [SlashCommand("hello", "Says hello world", runMode: RunMode.Async)]
         public async Task Hello()
         {
+            await DeferAsync();
             if (Context.User.Id != _king)
-                await RespondAsync("Hello!");
+                await FollowupAsync("Hello!");
             else
             {
                 string servers = await _serverService.GetAllServers();
-                RespondAsync(servers, ephemeral: true);
+                await FollowupAsync(servers, ephemeral: true);
             }
         }
 
         [SlashCommand("help", "How to use and list of commands")]
         public async Task Help()
         {
+            await RespondAsync("I am alive and reading your request!");
+            
+            await DeferAsync();
             var embed = new EmbedBuilder()
             .WithTitle("Town Manager Bot - Help Menu")
             .WithDescription("This bot allows you to create, manage, and track town expirations seamlessly.")
@@ -46,8 +50,8 @@ namespace Bot1.App.Commands
             .AddField("Pro Tip", "When creating a server, you can specify hours. If left blank, it defaults to **24 hours**.")
             .WithCurrentTimestamp();
 
-            await RespondAsync(embed: embed.Build(), ephemeral: true);
-            await RespondAsync("Help");
+            await FollowupAsync(embed: embed.Build(), ephemeral: true);
+            
         }
     }
 }

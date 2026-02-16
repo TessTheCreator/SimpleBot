@@ -18,9 +18,9 @@ namespace Bot1.App.Config
     {
         public static IServiceCollection ConfigureRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IServerRepository, ServerRepository>();
-            services.AddScoped<IEventRepository, EventRepository>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddSingleton<IServerRepository, ServerRepository>();
+            services.AddSingleton<IEventRepository, EventRepository>();
+            services.AddSingleton(typeof(IRepository<>), typeof(Repository<>));
             return services;
         }
 
@@ -28,7 +28,7 @@ namespace Bot1.App.Config
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSingleton<IServerService, ServerService>();
-            services.AddScoped<IEventService, EventService>();
+            services.AddSingleton<IEventService, EventService>();
             services.AddSingleton<BotEventHandler>();
             services.AddSingleton<ExpirationWorker>();
             return services;
@@ -74,7 +74,8 @@ namespace Bot1.App.Config
             var dbFolder = Path.Combine(rootPath, "Data", "DB");
             var dbPath = Path.Combine(dbFolder, "req.db");
             services.AddDbContext<BotDbContext>(options =>
-                options.UseSqlite($"Data Source={dbPath}"));
+                options.UseSqlite($"Data Source={dbPath}"), 
+                ServiceLifetime.Singleton);
 
             return services;
         }

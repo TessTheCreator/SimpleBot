@@ -40,6 +40,7 @@ namespace Bot1.App.Handlers
 
         public async Task HandleInteraction(SocketInteraction interaction)
         {
+            Console.WriteLine($"Context User: {interaction.User.Username} | Guild: {interaction.GuildId}");
             Console.WriteLine($"Interaction start: {interaction.Type}");
 
             using (var scope = _services.CreateScope())
@@ -47,7 +48,9 @@ namespace Bot1.App.Handlers
                 try
                 {
                     var ctx = new SocketInteractionContext(_client, interaction);
-                    var result = await _interactions.ExecuteCommandAsync(ctx, scope.ServiceProvider);
+                    Console.WriteLine($"Attempting to execute: {interaction.Data.ToString()}");
+                    var result = await _interactions.ExecuteCommandAsync(ctx, _services);
+                    Console.WriteLine($"Result: {result.Error} - {result.ErrorReason}");
 
                     if (result.IsSuccess)
                         Console.WriteLine("Command executed successfully!");

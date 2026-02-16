@@ -27,6 +27,12 @@ namespace Bot1.App.Commands
         public async Task HandleCreateServerModal(CreateServerModal modal)
         {
             await DeferAsync();
+            if (Context.Guild.Id == 0)
+            {
+                var guildIdError = EmbedFactory.CreateErrorEmbed("Error, please try again");
+                await FollowupAsync(embed: guildIdError);
+            }
+
             var server = new ServerApiModel
             {
                 ServerId = modal.ServerId,
@@ -83,9 +89,7 @@ namespace Bot1.App.Commands
         private bool IsAdmin(SocketUser user)
         {
             if (user is SocketGuildUser guildUser)
-            {
                 return guildUser.GuildPermissions.Administrator;
-            }
             return false;
         }
 

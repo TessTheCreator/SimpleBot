@@ -20,9 +20,10 @@ namespace Bot1
     public static Task Main(string[] args) => new Program().MainAsync();
         public async Task MainAsync()
         {
-            //_config = ENVLoader.LoadEnv(); //local
-            //var token = _config["DISCORDTOKEN"]; //local
-            var token = Environment.GetEnvironmentVariable("DISCORD_TOKEN"); //host
+            _config = ENVLoader.LoadEnv();
+            var token = _config["DISCORDTOKEN"] ?? Environment.GetEnvironmentVariable("DISCORDTOKEN");
+            if (token == null)
+                Console.WriteLine("Token is null");
 
             var services = new ServiceCollection();
             services
@@ -50,7 +51,8 @@ namespace Bot1
             _client.Ready += async () => await _handler.Ready();
             _client.InteractionCreated += async (interaction) => await _handler.HandleInteraction(interaction);
 
-            await _interactions.AddModulesAsync(typeof(Bot1.App.Commands.Commands).Assembly, _services);
+            await _interactions.AddModulesAsync(System.Reflection.Assembly.GetEntryAssembly(), _services);
+
 
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
