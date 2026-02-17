@@ -30,10 +30,12 @@ namespace Bot1.App.Handlers
         {
             Console.WriteLine($"INTERNAL CHECK: Modules: {_interactions.Modules.Count} | Commands: {_interactions.SlashCommands.Count}");
             
-            if (_guildId == null)
+            if (_guildId == 0)
                 throw new Exception("Guild Id does not exist");
             
             _ = Task.Run(async () => {
+                await _client.Rest.DeleteAllGlobalCommandsAsync(); 
+                await _client.Rest.BulkOverwriteGuildCommands(new ApplicationCommandProperties[] { }, _guildId);
                 await _interactions.RegisterCommandsToGuildAsync(_guildId, true);
             });
         }
