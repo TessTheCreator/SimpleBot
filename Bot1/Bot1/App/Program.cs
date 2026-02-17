@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Bot1.App.Config;
 using Bot1.App.Handlers;
 using Bot1.Data;
+using System.Net;
 
 namespace Bot1
 {
@@ -20,6 +21,19 @@ namespace Bot1
     public static Task Main(string[] args) => new Program().MainAsync();
         public async Task MainAsync()
         {
+            var listener = new HttpListener();
+            listener.Prefixes.Add("http://*:8080/");
+            listener.Start();
+            _ = Task.Run(() => {
+                while (true)
+                {
+                    var context = listener.GetContext();
+                    context.Response.StatusCode = 200;
+                    context.Response.Close();
+                }
+            });
+            Console.WriteLine("Fake Web Server running on Port 8080...");
+
             _config = ENVLoader.LoadEnv();
             var token = _config["DISCORDTOKEN"] ?? Environment.GetEnvironmentVariable("DISCORDTOKEN");
             if (token == null)
