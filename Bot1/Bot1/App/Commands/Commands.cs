@@ -39,8 +39,6 @@ namespace Bot1.App.Commands
         [SlashCommand("help", "How to use and list of commands")]
         public async Task Help()
         {
-            await RespondAsync("I am alive and reading your request!");
-            
             await DeferAsync();
             var embed = new EmbedBuilder()
             .WithTitle("Town Manager Bot - Help Menu")
@@ -55,7 +53,6 @@ namespace Bot1.App.Commands
             .WithCurrentTimestamp();
 
             await FollowupAsync(embed: embed.Build(), ephemeral: true);
-            
         }
     }
 }
