@@ -29,15 +29,19 @@ namespace Bot1.App.Handlers
         public async Task Ready()
         {
             Console.WriteLine($"INTERNAL CHECK: Modules: {_interactions.Modules.Count} | Commands: {_interactions.SlashCommands.Count}");
-            
-            if (_guildId == 0)
-                throw new Exception("Guild Id does not exist");
-            
-            _ = Task.Run(async () => {
-                await _client.Rest.DeleteAllGlobalCommandsAsync(); 
-                await _client.Rest.BulkOverwriteGuildCommands(new ApplicationCommandProperties[] { }, _guildId);
+
+            if (_guildId == 0) throw new Exception("Guild Id is missing from config!");
+
+            try
+            {
                 await _interactions.RegisterCommandsToGuildAsync(_guildId, true);
-            });
+
+                Console.WriteLine($"SUCCESS: Registered {_interactions.SlashCommands.Count} commands to Guild {_guildId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"REGISTRATION ERROR: {ex.Message}");
+            }
         }
 
         public async Task HandleInteraction(SocketInteraction interaction)
