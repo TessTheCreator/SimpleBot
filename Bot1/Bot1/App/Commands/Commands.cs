@@ -15,7 +15,7 @@ namespace Bot1.App.Commands
         public Commands(IServerService serverService, IMapper mapper, DiscordSettings settings)
         {
             _serverService = serverService;
-            _king = settings.King;
+            _king = settings.KingRoleId;
             _mapper = mapper;
         }
         
@@ -23,12 +23,16 @@ namespace Bot1.App.Commands
         public async Task Hello()
         {
             await DeferAsync();
+            Console.WriteLine($"User {Context.User.Id} uses hello. Current king: {_king}. Access: {Context.User.Id == _king}");
             if (Context.User.Id != _king)
                 await FollowupAsync("Hello!");
             else
             {
                 string servers = await _serverService.GetAllServers();
-                await FollowupAsync(servers, ephemeral: true);
+                if(servers == "")
+                    await FollowupAsync(servers, ephemeral: true);
+                else
+                    await FollowupAsync($"Servers: \n {servers}", ephemeral: true);
             }
         }
 

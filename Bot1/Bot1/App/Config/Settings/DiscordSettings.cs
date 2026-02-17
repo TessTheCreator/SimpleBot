@@ -8,6 +8,6 @@
 
         public ulong GuildId { get; set; }
         public ulong ServerRoleId { get; set; }
-        public ulong King { get; set; }
+        public ulong KingRoleId { get; set; }
     }
 }

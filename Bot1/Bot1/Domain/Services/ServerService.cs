@@ -69,12 +69,12 @@ namespace Bot1.Services
             {
                 sb.AppendLine($"=================================" +
                     $"\n **#{model.Id}) |**" +
-                    $"\n **Town Id:** {model.ServerId}" +
-                    $"\n **Password:** {model.ServerPassword}" +
-                    $"\n **Made By:** {model.Host} " +
-                    $"\n (Expires: {model.ExpiresAt}) \n)" +
-                    $"\n (Created: {model.CreatedAt} \n)" +
-                    $"\n (GuildId: {model.GuildId} \n");
+                    $"\n **Server Id:** {model.ServerId}" +
+                    $"\n **Pass:** {model.ServerPassword}" +
+                    $"\n **Host:** {model.Host} " +
+                    $"\n Expires: {model.ExpiresAt}) \n" +
+                    $"\n Created: {model.CreatedAt} \n" +
+                    $"\n GuildId: {model.GuildId} \n");
             }
             return sb.ToString();
         }
