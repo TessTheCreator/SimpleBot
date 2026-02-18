@@ -46,7 +46,7 @@ namespace Bot1.App.Commands
 
             var model = _mapper.Map<ServerModel>(server);
             if (model.Host == null) model.Host = Context.User.GlobalName;
-            var updatedModel = await _serverService.CreateServerAsync(model, IsAdmin(Context.User));
+            var updatedModel = await _serverService.CreateServerAsync(model);
 
             var embed = EmbedFactory.CreateServerSuccessEmbed(updatedModel, Context.User.Id);
             var embed1 = EmbedFactory.CreateEmbed("Added Town", $"Town {modal.ServerId} Added");

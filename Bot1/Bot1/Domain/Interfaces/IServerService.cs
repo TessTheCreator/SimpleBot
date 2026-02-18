@@ -5,7 +5,7 @@ namespace Bot1.Domain.Interfaces
 {
     public interface IServerService
     {
-        Task<ServerModel> CreateServerAsync(ServerModel server, bool isAdmin);
+        Task<ServerModel> CreateServerAsync(ServerModel server);
         Task<string> GetServersAsync(ulong guildId);
         Task<ServerModel> GetServerAsync(ulong guildId, ulong userId, int rowId);
         Task<string> GetAllServers();

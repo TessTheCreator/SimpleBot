@@ -4,7 +4,6 @@ using Bot1.Data.Interfaces;
 using Bot1.Domain.Exceptions;
 using Bot1.Domain.Interfaces;
 using Bot1.Domain.Models;
-using System.Dynamic;
 using System.Text;
 
 namespace Bot1.Services
@@ -88,7 +87,7 @@ namespace Bot1.Services
             return model;
         }
 
-        public async Task<ServerModel> CreateServerAsync(ServerModel server, bool isAdmin)
+        public async Task<ServerModel> CreateServerAsync(ServerModel server)
         {
             var serverWithTime = UpdateHours(server);
             var serverEntity = _mapper.Map<ServerEntity>(serverWithTime);

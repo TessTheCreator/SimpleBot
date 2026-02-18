@@ -36,12 +36,15 @@ namespace Bot1.App.Config
 
         public static IServiceCollection ConfigureSettings(this IServiceCollection services, IConfiguration config)
         {
-            var section = config.GetSection("DiscordSettings");
-
+            var discordSection = config.GetSection("DiscordSettings");
             var discordSettings = new DiscordSettings();
-            section.Bind(discordSettings);
-
+            discordSection.Bind(discordSettings);
             services.AddSingleton(discordSettings);
+
+            var devSection = config.GetSection("DevSettings");
+            var devSettings = new DevSettings();
+            devSection.Bind(devSettings);
+            services.AddSingleton(devSettings);
 
             return services;
         }

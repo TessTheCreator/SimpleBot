@@ -7,6 +7,7 @@ using Bot1.App.Config;
 using Bot1.App.Handlers;
 using Bot1.Data;
 using System.Net;
+using Bot1.App.Config.Settings;
 
 namespace Bot1
 {
@@ -21,23 +22,7 @@ namespace Bot1
     public static Task Main(string[] args) => new Program().MainAsync();
         public async Task MainAsync()
         {
-            var listener = new HttpListener();
-            listener.Prefixes.Add("http://*:8080/");
-            listener.Start();
-            _ = Task.Run(() => {
-                while (true)
-                {
-                    var context = listener.GetContext();
-                    context.Response.StatusCode = 200;
-                    context.Response.Close();
-                }
-            });
-            Console.WriteLine("Fake Web Server running on Port 8080...");
-
             _config = ENVLoader.LoadEnv();
-            var token = _config["DISCORDTOKEN"] ?? Environment.GetEnvironmentVariable("DISCORDTOKEN");
-            if (token == null)
-                Console.WriteLine("Token is null");
 
             var services = new ServiceCollection();
             services
@@ -47,6 +32,29 @@ namespace Bot1
                 .ConfigureRepositories()
                 .ConfigureServices();
             _services = services.BuildServiceProvider();
+
+            var devSettings = _services.GetRequiredService<DevSettings>();
+            var discordSettings = _services.GetRequiredService<DiscordSettings>();
+
+            var token = discordSettings.DiscordBotToken;
+            if (token == null)
+                Console.WriteLine("Token is null");
+
+            if (devSettings.IsLocal != true)
+            {
+                var listener = new HttpListener();
+                listener.Prefixes.Add("http://*:8080/");
+                listener.Start();
+                _ = Task.Run(() => {
+                    while (true)
+                    {
+                        var context = listener.GetContext();
+                        context.Response.StatusCode = 200;
+                        context.Response.Close();
+                    }
+                });
+                Console.WriteLine("Fake Web Server running on Port 8080...");
+            }
 
             using (var scope = _services.CreateScope())
             {

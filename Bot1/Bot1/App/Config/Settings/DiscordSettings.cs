@@ -6,6 +6,7 @@
 
         public DiscordSettings() { }
 
+        public string DiscordBotToken { get; set; }
         public ulong GuildId { get; set; }
         public ulong ServerRoleId { get; set; }
         public ulong KingRoleId { get; set; }

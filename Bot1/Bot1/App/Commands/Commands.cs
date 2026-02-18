@@ -23,16 +23,24 @@ namespace Bot1.App.Commands
         public async Task Hello()
         {
             await DeferAsync();
-            Console.WriteLine($"User {Context.User.Id} uses hello. Current king: {_king}. Access: {Context.User.Id == _king}");
-            if (Context.User.Id != _king)
-                await FollowupAsync("Hello!");
-            else
+            try
             {
-                string servers = await _serverService.GetAllServers();
-                if(servers == "")
-                    await FollowupAsync(servers, ephemeral: true);
+                Console.WriteLine($"User {Context.User.Id} uses hello. Current king: {_king}. Access: {Context.User.Id == _king}");
+                if (Context.User.Id != _king)
+                    await FollowupAsync("Hello!");
                 else
-                    await FollowupAsync($"Servers: \n {servers}", ephemeral: true);
+                {
+                    string servers = await _serverService.GetAllServers();
+                    if (string.IsNullOrEmpty(servers))
+                        await FollowupAsync(servers, ephemeral: true);
+                    else
+                        await FollowupAsync($"Towns: \n {servers}", ephemeral: true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                await FollowupAsync("Hello!", ephemeral: true);
             }
         }
 

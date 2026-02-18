@@ -6,6 +6,8 @@ using Bot1.Domain.Interfaces;
 using Discord.Interactions;
 using Discord.WebSocket;
 using MyBot.Services;
+using System.Dynamic;
+using System.Text;
 
 namespace Bot1.App.Commands
 {
@@ -50,21 +52,33 @@ namespace Bot1.App.Commands
         [SlashCommand("add", "Add a new town")]
         public async Task AddServer()
         {
-            if (!IsAuthorized(Context.User, _serverAccessRole))
+            try
             {
-                var embed = EmbedFactory.CreateErrorEmbed("You are not authorized to create a server!");
+                Console.WriteLine($"Access {_serverAccessRole}, User {Context.User.Username} Roles: {GetUserRoles(Context.User)} ");
+                if (!IsAuthorized(Context.User, _serverAccessRole))
+                {
+                    var embed = EmbedFactory.CreateErrorEmbed("You are not authorized to create a town!");
+                    await RespondAsync(embed: embed, ephemeral: true);
+                }
+                else
+                {
+                    await RespondWithModalAsync<CreateServerModal>("create_server_modal");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                var embed = EmbedFactory.CreateErrorEmbed("An error has occured, please try again or contact Tess");
                 await RespondAsync(embed: embed, ephemeral: true);
             }
-            else
-            {
-                await RespondWithModalAsync<CreateServerModal>("create_server_modal");
-            }
+
         }
 
         [SlashCommand("delete", "Remove a town")]
         public async Task RemoveServer([Summary("row_id", "Id of the row to remove")] int rowId)
         {
             await DeferAsync();
+            Console.WriteLine($"Access {_serverAccessRole}, User {Context.User.Username} Roles: {GetUserRoles(Context.User)} ");
             if (!IsAuthorized(Context.User, _serverAccessRole))
             {
                 var embed = EmbedFactory.CreateErrorEmbed("You are not authorized to delete this town!");
@@ -100,6 +114,7 @@ namespace Bot1.App.Commands
         {
             try
             {
+                Console.WriteLine($"Access {_serverAccessRole}, User {Context.User.Username} Roles: {GetUserRoles(Context.User)} ");
                 ulong guildId = Context.Guild.Id;
                 ulong userId = Context.User.Id;
 
@@ -145,6 +160,22 @@ namespace Bot1.App.Commands
             return guildUser.GuildPermissions.Administrator ||
                    guildUser.Roles.Any(r => r.Id == accessRole);
         }
+
+        private string GetUserRoles(SocketUser user)
+        {
+            if (user is not SocketGuildUser guildUser)
+                return "User Roles: None (Not in a server)";
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var role in guildUser.Roles)
+            {
+                if (role.IsEveryone) continue;
+                sb.Append($"[{role.Id}] ");
+            }
+            return "User Roles: " + (sb.Length > 0 ? sb.ToString() : "No special roles");
+        } 
+
 
         private bool IsAdmin(SocketUser user)
         {
