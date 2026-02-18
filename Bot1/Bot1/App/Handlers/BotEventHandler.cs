@@ -55,7 +55,7 @@ namespace Bot1.App.Handlers
                 {
                     var ctx = new SocketInteractionContext(_client, interaction);
                     Console.WriteLine($"Attempting to execute: {interaction.Data.ToString()}");
-                    var result = await _interactions.ExecuteCommandAsync(ctx, _services);
+                    var result = await _interactions.ExecuteCommandAsync(ctx, scope.ServiceProvider);
                     Console.WriteLine($"Result: {result.Error} - {result.ErrorReason}");
 
                     if (result.IsSuccess)
