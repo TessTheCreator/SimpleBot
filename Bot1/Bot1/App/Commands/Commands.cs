@@ -45,10 +45,10 @@ namespace Bot1.App.Commands
             .WithDescription("This bot allows you to create, manage, and track town expirations seamlessly.")
             .WithColor(Color.Blue)
             .AddField("Town Management",
-                "`/server create` - Register a new server (Requires Role).\n" +
-                "`/server delete` - Removes an existing server (Requires Role).\n" +
-                "`/server update` - Modify settings or extend server time (Requires Role).\n" +
-                "`/server list` - See all servers you have registered.")
+                "`/town add` - Register a new server (Requires Role).\n" +
+                "`/town delete` - Removes an existing server (Requires Role).\n" +
+                "`/town update` - Modify settings or extend server time (Requires Role).\n" +
+                "`/town list` - See all servers you have registered.")
             .AddField("Pro Tip", "When creating a server, you can specify hours. If left blank, it defaults to **24 hours**.")
             .WithCurrentTimestamp();
 
