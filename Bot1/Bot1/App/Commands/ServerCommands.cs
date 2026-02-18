@@ -6,7 +6,6 @@ using Bot1.Domain.Interfaces;
 using Discord.Interactions;
 using Discord.WebSocket;
 using MyBot.Services;
-using System.Dynamic;
 using System.Text;
 
 namespace Bot1.App.Commands
@@ -16,11 +15,13 @@ namespace Bot1.App.Commands
     {
         private readonly IServerService _serverService;
         private ulong _serverAccessRole;
+        private ulong _king;
 
         public ServerSubCommands(IServerService serverService, DiscordSettings settings)
         {
             _serverService = serverService;
             _serverAccessRole = settings.ServerRoleId;
+            _king = settings.KingRoleId;
         }
 
         [SlashCommand("list", "List all currently existing towns")]
@@ -55,6 +56,7 @@ namespace Bot1.App.Commands
             try
             {
                 Console.WriteLine($"Access {_serverAccessRole}, User {Context.User.Username} Roles: {GetUserRoles(Context.User)} ");
+                Console.WriteLine($"Access User {Context.User.Id}: {IsAuthorized(Context.User, _serverAccessRole)} ");
                 if (!IsAuthorized(Context.User, _serverAccessRole))
                 {
                     var embed = EmbedFactory.CreateErrorEmbed("You are not authorized to create a town!");
@@ -115,6 +117,7 @@ namespace Bot1.App.Commands
             try
             {
                 Console.WriteLine($"Access {_serverAccessRole}, User {Context.User.Username} Roles: {GetUserRoles(Context.User)} ");
+                Console.WriteLine($"{Context.User.Username} is authorised: {IsAuthorized(Context.User, _serverAccessRole)}");
                 ulong guildId = Context.Guild.Id;
                 ulong userId = Context.User.Id;
 
@@ -155,10 +158,13 @@ namespace Bot1.App.Commands
         private bool IsAuthorized(SocketUser user, ulong accessRole)
         {
             if (user is not SocketGuildUser guildUser)
+            {
+                Console.WriteLine("User is not guild user");
                 return false;
+            }
 
             return guildUser.GuildPermissions.Administrator ||
-                   guildUser.Roles.Any(r => r.Id == accessRole);
+                   guildUser.Roles.Any(r => r.Id == accessRole) || (user.Id == _king);
         }
 
         private string GetUserRoles(SocketUser user)
@@ -181,7 +187,7 @@ namespace Bot1.App.Commands
         {
             if (user is SocketGuildUser guildUser)
             {
-                return guildUser.GuildPermissions.Administrator;
+                return guildUser.GuildPermissions.Administrator || guildUser.Id == _king;
             }
             return false;
         }
