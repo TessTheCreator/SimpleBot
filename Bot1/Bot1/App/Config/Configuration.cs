@@ -64,7 +64,7 @@ namespace Bot1.App.Config
                 var client = sp.GetRequiredService<DiscordSocketClient>();
                 return new InteractionService(client, new InteractionServiceConfig
                 {
-                    DefaultRunMode = RunMode.Async
+                    DefaultRunMode = RunMode.Sync
                 });
             });
 
@@ -78,7 +78,7 @@ namespace Bot1.App.Config
             var dbFolder = Path.Combine(rootPath, "Data", "DB");
             var dbPath = Path.Combine(dbFolder, "req.db");
             services.AddDbContext<BotDbContext>(options =>
-                options.UseSqlite($"Data Source={dbPath}"));
+                options.UseSqlite($"Data Source={dbPath};Pooling=False"));
 
             return services;
         }

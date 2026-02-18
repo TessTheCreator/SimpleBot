@@ -65,6 +65,7 @@ namespace Bot1.App.Handlers
                 }
                 catch (Exception ex) { Console.WriteLine($"EX: {ex}"); }
             }
+            Console.WriteLine("DEBUG: SCOPE DISPOSED");
         }
 
         public Task Log(LogMessage msg)
